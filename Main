@@ -1,0 +1,33 @@
+
+from google.auth import credentials
+from google.oauth2 import service_account
+from google.auth.transport.requests import Request
+from googleapiclient.discovery import build
+
+# Configurar las credenciales de autenticación
+SCOPES = ['https://www.googleapis.com/auth/fitness.activity.read']
+SERVICE_ACCOUNT_FILE = 'service_account.json'  # Archivo JSON de credenciales de servicio
+
+# Autenticar utilizando el archivo de credenciales de servicio
+creds = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+
+# Crear un cliente para interactuar con la Google Fit API
+fit_service = build('fitness', 'v1', credentials=creds)
+
+# Obtener datos de pasos de la última semana
+steps_data = fit_service.users().dataSources().datasets().get(
+    userId='me',
+    dataSourceId='derived:com.google.step_count.delta:com.google.android.gms:estimated_steps',
+    body={
+        'startTimeMillis': 'timestamp del inicio de la semana pasada',
+        'endTimeMillis': 'timestamp del final de la semana pasada',
+    }
+).execute()
+
+# Procesar los datos obtenidos
+if 'point' in steps_data:
+    total_steps = sum(int(point['value'][0]['intVal']) for point in steps_data['point'])
+    print(f'Total de pasos de la semana pasada: {total_steps}')
+else:
+    print('No se encontraron datos de pasos para la semana pasada.')
