@@ -1,33 +1,48 @@
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.button import Button
+from kivy.uix.screenmanager import ScreenManager, Screen
 
-from google.auth import credentials
-from google.oauth2 import service_account
-from google.auth.transport.requests import Request
-from googleapiclient.discovery import build
+class MenuScreen(Screen):
+    pass
 
-# Configurar las credenciales de autenticación
-SCOPES = ['https://www.googleapis.com/auth/fitness.activity.read']
-SERVICE_ACCOUNT_FILE = 'service_account.json'  # Archivo JSON de credenciales de servicio
+class Screen1(Screen):
+    pass
 
-# Autenticar utilizando el archivo de credenciales de servicio
-creds = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+class Screen2(Screen):
+    pass
 
-# Crear un cliente para interactuar con la Google Fit API
-fit_service = build('fitness', 'v1', credentials=creds)
+class Screen3(Screen):
+    pass
 
-# Obtener datos de pasos de la última semana
-steps_data = fit_service.users().dataSources().datasets().get(
-    userId='me',
-    dataSourceId='derived:com.google.step_count.delta:com.google.android.gms:estimated_steps',
-    body={
-        'startTimeMillis': 'timestamp del inicio de la semana pasada',
-        'endTimeMillis': 'timestamp del final de la semana pasada',
-    }
-).execute()
+class Screen4(Screen):
+    pass
 
-# Procesar los datos obtenidos
-if 'point' in steps_data:
-    total_steps = sum(int(point['value'][0]['intVal']) for point in steps_data['point'])
-    print(f'Total de pasos de la semana pasada: {total_steps}')
-else:
-    print('No se encontraron datos de pasos para la semana pasada.')
+class Screen5(Screen):
+    pass
+
+class Screen6(Screen):
+    pass
+
+class Screen7(Screen):
+    pass
+
+class Screen8(Screen):
+    pass
+
+class TestApp(App):
+    def build(self):
+        sm = ScreenManager()
+        sm.add_widget(MenuScreen(name='menu'))
+        sm.add_widget(Screen1(name='screen1'))
+        sm.add_widget(Screen2(name='screen2'))
+        sm.add_widget(Screen3(name='screen3'))
+        sm.add_widget(Screen4(name='screen4'))
+        sm.add_widget(Screen5(name='screen5'))
+        sm.add_widget(Screen6(name='screen6'))
+        sm.add_widget(Screen7(name='screen7'))
+        sm.add_widget(Screen8(name='screen8'))
+        return sm
+
+if __name__ == '__main__':
+    TestApp().run()
